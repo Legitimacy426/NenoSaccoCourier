@@ -94,12 +94,12 @@ export default function Orders() {
   const tabs = [
     {
       value: "allOrders",
-      label: "All Orders",
+      label: "All",
       content: <UITable columns={columns} data={filteredOrders} />,
     },
     {
       value: "completedOrders",
-      label: "Completed Orders",
+      label: "Completed ",
       content: (
         <UITable
           columns={columns}
@@ -109,7 +109,7 @@ export default function Orders() {
     },
     {
       value: "processingOrders",
-      label: "Processing Orders",
+      label: "Processing",
       content: (
         <UITable
           columns={columns}
@@ -119,7 +119,7 @@ export default function Orders() {
     },
     {
       value: "shippedOrders",
-      label: "Shipped Orders",
+      label: "Shipped ",
       content: (
         <UITable
           columns={columns}
@@ -129,7 +129,7 @@ export default function Orders() {
     },
     {
       value: "pendingOrders",
-      label: "Pending Orders",
+      label: "Pending ",
       content: (
         <UITable
           columns={columns}

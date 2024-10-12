@@ -71,7 +71,7 @@ export default function Header({
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="bg-background border border-gray-200 dark:border-gray-700">
               <DropdownMenuLabel>
                 <div>John Doe</div>
                 <div className="text-sm text-muted-foreground">
