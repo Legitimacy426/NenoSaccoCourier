@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useTheme } from 'next-themes';
+import { useAuth } from '@/context/AuthContext';
+import { authApi } from '@/lib/api/auth';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -16,6 +18,7 @@ const loginSchema = z.object({
 });
 
 export function LoginForm() {
+  const { user, refetchUser, t, setUser, loading,  } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { theme } = useTheme();
@@ -30,14 +33,46 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     setIsLoading(true);
-    // TODO: Implement actual login logic
-    console.log(values);
-    // Simulate successful login
-    setTimeout(() => {
+    try {
+      // Attempt login
+      const response = await authApi.login(values.email, values.password);
+      const loggedInUser = response.data.user;
+
+      // Save user data to local storage
+      localStorage.setItem(
+        "authUserNeno",
+        JSON.stringify({
+          user: loggedInUser,
+          userId: loggedInUser._id,
+          role: loggedInUser.role,
+          timestamp: Date.now(),
+        })
+      );
+
+      // Set the user state and refetch user data
+      setUser(loggedInUser);
+      refetchUser(loggedInUser.email);
+
+      // Navigate based on user role
+      if (loggedInUser.role === "staff" || loggedInUser.role === "customer") {
+        router.push('/dashboard');
+      } else if (loggedInUser.role === "admin") {
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      // Catch any errors that occurred during the login process
+      t("error", "Failed to login", "destructive");
+    } finally {
       setIsLoading(false);
-      router.push('/dashboard');
-    }, 1000);
+    }
   }
+
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+      refetchUser(user.email);
+    }
+  }, [user, router, refetchUser]);
 
   return (
     <Form {...form}>

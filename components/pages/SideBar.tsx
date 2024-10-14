@@ -12,15 +12,15 @@ import {
   ShoppingCart,
   UserCircle,
   ChevronRight,
-  LogOut,
-  ArrowRight,
   MapPin,
   Search,
 } from "lucide-react";
+import { useGlobal } from "@/context/GlobalContext"; // Importing the GlobalContext
 
 const sidebarItems = [
   { name: "Dashboard", icon: LayoutDashboard, color: "text-blue-500" },
   { name: "Parcels", icon: Package, color: "text-green-500" },
+  { name: "Parcel Types", icon: Package, color: "text-orange-500" },
   { name: "Orders", icon: ShoppingCart, color: "text-yellow-500" },
   { name: "Track", icon: MapPin, color: "text-gray-500" },
   { name: "Users", icon: Users, color: "text-purple-500" },
@@ -28,16 +28,13 @@ const sidebarItems = [
 ];
 
 export default function Sidebar({
-  activeItem,
-  setActiveItem,
   isSidebarOpen,
   toggleSidebar,
 }: {
-  activeItem: string;
-  setActiveItem: (item: string) => void;
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
 }) {
+  const { activeTab, setActiveTab } = useGlobal(); // Using GlobalContext
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
@@ -89,16 +86,16 @@ export default function Sidebar({
             {sidebarItems.map((item) => (
               <Button
                 key={item.name}
-                variant={activeItem === item.name ? "secondary" : "ghost"}
+                variant={activeTab === item.name ? "secondary" : "ghost"}
                 className={cn(
                   "w-full justify-start mb-1 transition-colors rounded-lg",
-                  activeItem === item.name
+                  activeTab === item.name
                     ? "bg-primary/10 text-primary hover:bg-primary/20"
                     : "hover:bg-muted",
                   isExpanded ? "px-4" : "px-2"
                 )}
                 onClick={() => {
-                  setActiveItem(item.name);
+                  setActiveTab(item.name); // Set the active tab from context
                   if (!isExpanded) {
                     setIsExpanded(true);
                   }
@@ -113,13 +110,13 @@ export default function Sidebar({
         </ScrollArea>
 
         {isExpanded && (
-          <div className=" bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-blue-600 dark:to-cyan-600 text-white rounded-lg mx-2 mb-2">
-            <div className="relative w-full h-24   rounded-t-lg overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-blue-600 dark:to-cyan-600 text-white rounded-lg mx-2 mb-2">
+            <div className="relative w-full h-24 rounded-t-lg overflow-hidden">
               <Image
                 src="/images/cargo1.jpg"
                 alt="Track your order"
-                layout="fill"
-                objectFit="cover"
+                fill={true}
+               style={{objectFit: "cover"}}
               />
             </div>
             <div className="p-4">
@@ -129,7 +126,7 @@ export default function Sidebar({
               </p>
               <Button
                 onClick={() => {
-                  setActiveItem('Track');
+                  setActiveTab("Track");
                   if (!isExpanded) {
                     setIsExpanded(true);
                   }

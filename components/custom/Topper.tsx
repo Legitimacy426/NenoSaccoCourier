@@ -32,9 +32,9 @@ const Topper = ({ title, description, icon: Icon, image }: TopperProps) => {
           <Image
             src={image}
             alt="Order Management Illustration"
-            layout="fill"
-            objectFit="cover"
+            fill={true}
             className="rounded-b-lg md:rounded-r-lg md:rounded-bl-none"
+            style={{ objectFit: "cover" }}
           />
         </div>
       </div>

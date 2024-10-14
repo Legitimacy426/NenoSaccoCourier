@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,16 +20,19 @@ import {
   Moon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useAuth } from "@/context/AuthContext";
+import { useGlobal } from "@/context/GlobalContext";
 
 export default function Header({
   toggleSidebar,
-  activeItem,
+
 }: {
   toggleSidebar: () => void;
   activeItem: string;
 }) {
   const { setTheme, theme } = useTheme();
-
+  const { user,logout } = useAuth();
+  const {activeTab, setActiveTab} = useGlobal();
   return (
     <header className="bg-gradient-to-br from-blue-50 via-indigo-50 border border-gray-200 dark:border-gray-700 to-purple-50 dark:from-gray-800 dark:via-gray-900 dark:to-slate-900  rounded-xl mx-6 mt-4 mb-2 shadow-md">
       <div className="flex items-center justify-between p-4">
@@ -45,7 +46,7 @@ export default function Header({
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle sidebar</span>
           </Button>
-          <h1 className="text-2xl font-semibold text-foreground dark:text-white">{activeItem}</h1>
+          <h1 className="text-2xl font-semibold text-foreground dark:text-white">{activeTab}</h1>
         </div>
         <div className="flex items-center space-x-4">
           <Button
@@ -68,19 +69,22 @@ export default function Header({
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer">
                 <AvatarImage src="/placeholder-user.jpg" alt="User" />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 font-bold text-white">{user?.username?.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-background border border-gray-200 dark:border-gray-700">
               <DropdownMenuLabel>
-                <div>John Doe</div>
-                <div className="text-sm text-muted-foreground">
-                  john.doe@example.com
+                <div>{user?.username?.charAt(0).toUpperCase() + user?.username?.slice(1)}</div>
+                <div className="text-sm text-muted-foreground truncate max-w-[200px]">
+                  {user?.email && user.email.length > 20
+                    ? `${user.email.substring(0, 20)}...`
+                    : user?.email}
                 </div>
               </DropdownMenuLabel>
+
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/profile" className="w-full flex items-center">
+                <Link href="" className="w-full flex items-center" onClick={() => setActiveTab("Profile")}>
                   <UserCircle className="mr-2 h-4 w-4" />
                   View Profile
                 </Link>
@@ -92,7 +96,7 @@ export default function Header({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Log Out
               </DropdownMenuItem>

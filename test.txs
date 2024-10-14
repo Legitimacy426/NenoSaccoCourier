@@ -1,0 +1,103 @@
+        order sample
+{
+    "order_id": "123456",
+    "order_date": "2024-01-01",
+    "order_status": "pending",
+    "shipping_cost": 10.00,
+    "order_total": 100.00,
+    "order_items": [
+        {
+            "item_id": "1",
+            "item_name": "Product 1",
+            "item_price": 50.00,
+            "item_quantity": 1,
+            "item_total": 50.00,
+            "parcel_type_id": "1",
+
+        },
+        {
+            "item_id": "2",
+            "item_name": "Product 2",
+            "item_price": 50.00,
+            "item_quantity": 1,
+            "item_total": 50.00,
+            "parcel_type_id": "1",
+
+        }
+    ],
+    "order_address": {
+        "street": "123 Main St",
+        "city": "Anytown",
+        "state": "CA",
+        "zip": "12345",
+        "country":"USA"
+    },
+    "order_customer": {
+        "customer_id": "1",
+        "customer_name": "John Doe",
+        "customer_email": "john.doe@example.com"
+    },
+    "total_price": 100.00,
+    payment:{
+        status:"paid",
+        amount:100.00,
+        currency:"USD",
+        payment_method:"credit_card",
+        payment_date:"2024-01-01"
+    },
+    "shipping":{
+        "status":"shipped",
+        "tracking_number":"1234567890",
+        "carrier":"USPS",
+        "estimated_delivery_date":"2024-01-05"
+    },
+    "status":"oder_placed|| processing|| in_transit|| out_for_delivery|| delivered",
+    "receiver":{
+        "user_id": "1",
+        "user_name": "John Doe",
+        "user_email": "john.doe@example.com",
+        "user_phone": "1234567890",
+        "user_address": "123 Main St, Anytown, CA 12345"
+    },
+    "sender":{
+        "user_id": "2",
+        "user_name": "Jane Doe",
+        "user_email": "jane.doe@example.com",
+        "user_phone": "1234567890",
+        "user_address": "123 Main St, Anytown, CA 12345"
+    },
+    "created_at":"2024-01-01",
+    "updated_at":"2024-01-01"
+
+}
+
+
+
+parcel_type:{
+    "parcel_type_id": "1",
+    "parcel_type_name": "small",
+    "parcel_type_description": "small parcel",
+
+}
+
+
+
+
+parcel :{
+    "parcel_id": "1",
+    "parcel_type_id": "1",
+    "parcel_price": 10.00,
+    "parcel_description": "small parcel",
+
+   "parcel_size": "small",
+   "parcel_weight": 10.00,
+   "parcel_height": 10.00,
+   "parcel_width": 10.00,
+   "parcel_length": 10.00,
+   "parcel_status": "pending",
+   "parcel_status": "pending",
+   "parcel_status": "pending",
+   "parcel_status": "pending",
+
+}
+

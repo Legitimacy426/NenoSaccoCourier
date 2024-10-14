@@ -20,6 +20,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useAuth } from "@/context/AuthContext";
 
 const data = [
   { name: "Jan", value: 400 },
@@ -37,11 +38,12 @@ const recentOrders = [
 ];
 
 export default function Dashboard() {
+  const { user } = useAuth();
   return (
     <div className="p-8 space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Welcome back, Admin!</h1>
+          <h1 className="text-3xl font-bold">Welcome back, {user?.username}!</h1>
           <p className="text-muted-foreground">
             Here's what's happening with your courier service today.
           </p>

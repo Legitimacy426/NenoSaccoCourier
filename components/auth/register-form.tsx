@@ -7,6 +7,9 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 const registerSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -19,8 +22,9 @@ const registerSchema = z.object({
 });
 
 export function RegisterForm() {
+  const { t } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-
+const router = useRouter();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -33,7 +37,40 @@ export function RegisterForm() {
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
     setIsLoading(true);
-    // TODO: Implement registration logic
+       try {
+         const reponse = await axios.post("/api/auth/register", {
+           username: values.name.trim(),
+           email: values.email.trim() || values.name.trim(),
+           password: values.password.trim(),
+           phone: "",
+         });
+         const loggenInuser = reponse.data.existingUser;
+         console.log(loggenInuser,"loggenInuser");
+
+         const user = {
+           username: loggenInuser.username,
+           email: loggenInuser.email || loggenInuser.username,
+           phone: loggenInuser.phone,
+           role: loggenInuser.role,
+           _id: loggenInuser._id,
+         };
+         localStorage.setItem(
+           "authUserNeno",
+           JSON.stringify({
+             user: user,
+             userId: loggenInuser._id,
+             role: loggenInuser.role,
+             timestamp: Date.now(),
+           })
+         );
+         router.push("/dashboard");
+       } catch (err: any) {
+         console.log(err,"err");
+         t("error", err.response.data.message, "destructive");
+         t("error", `${values.email} is not added by admin`, "destructive");
+       } finally {
+         setIsLoading(false);
+       }
     console.log(values);
     setIsLoading(false);
   }

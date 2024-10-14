@@ -16,13 +16,14 @@ import {
 import Topper from "@/components/custom/Topper";
 import UITabs from "@/components/custom/UITabs"; // Import the UITabs component
 import UITable from "@/components/custom/UITable"; // Import the new UITable component
+import AddParcelSheet from "./AddParcelSheet";
 
 const parcels = [
   {
     id: "P001",
     sender: "John Doe",
     recipient: "Jane Smith",
-    status: "In Transit",
+    status: "pending",
     location: "Nairobi",
     estimatedDelivery: "2023-05-15",
   },
@@ -30,7 +31,7 @@ const parcels = [
     id: "P002",
     sender: "Alice Johnson",
     recipient: "Bob Williams",
-    status: "Delivered",
+    status: "delivered",
     location: "Mombasa",
     estimatedDelivery: "2023-05-10",
   },
@@ -55,7 +56,7 @@ const parcels = [
 export default function Parcels() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredParcels, setFilteredParcels] = useState(parcels);
-
+  const [isAddParcelSheetOpen, setIsAddParcelSheetOpen] = useState(false);
   const handleSearch = () => {
     const filtered = parcels.filter(
       (parcel) =>
@@ -126,7 +127,7 @@ export default function Parcels() {
         <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
           Parcels Overview
         </h2>
-        <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
+        <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white" onClick={() => setIsAddParcelSheetOpen(true)}>
           <Plus className="mr-2 h-4 w-4" /> Add New Parcel
         </Button>
       </div>
@@ -208,6 +209,7 @@ export default function Parcels() {
 
       {/* Tabs Section */}
       <UITabs tabs={tabs} defaultValue="all" />
+      <AddParcelSheet isOpen={isAddParcelSheetOpen} onClose={() => setIsAddParcelSheetOpen(false)} />
     </div>
   );
 }
