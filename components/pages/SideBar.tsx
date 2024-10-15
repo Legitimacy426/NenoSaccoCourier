@@ -20,7 +20,7 @@ import { useGlobal } from "@/context/GlobalContext"; // Importing the GlobalCont
 const sidebarItems = [
   { name: "Dashboard", icon: LayoutDashboard, color: "text-blue-500" },
   { name: "Parcels", icon: Package, color: "text-green-500" },
-  { name: "Parcel Types", icon: Package, color: "text-orange-500" },
+
   { name: "Orders", icon: ShoppingCart, color: "text-yellow-500" },
   { name: "Track", icon: MapPin, color: "text-gray-500" },
   { name: "Users", icon: Users, color: "text-purple-500" },

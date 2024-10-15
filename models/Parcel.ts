@@ -16,7 +16,7 @@ export interface IParcel extends Document {
   status: ParcelStatus;
   weight: number;
   price: number;
-  parcelType?: IParcelType; // Optional ParcelType reference
+  parcelType?: IParcelType; 
   softDeleted: boolean;
   description?: string;
   trackingNumber: string;

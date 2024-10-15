@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Order, { IOrder } from "@/models/Order";
-import { ORDER_POPULATE_FIELDS } from "@/constants/populate"; // Ensure this is correct
+import User from "@/models/User";
+
 
 export async function GET() {
   await dbConnect();
@@ -22,6 +23,14 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const newOrder = await Order.create(body);
+
+    // Push the orderId to the user's orders array
+    if (newOrder.customer) {
+      await User.findByIdAndUpdate(newOrder.customer, {
+        $push: { orders: newOrder._id }
+      });
+    }
+
     return NextResponse.json(newOrder, { status: 201 });
   } catch (error) {
     console.error("Error creating order:", error);
@@ -38,7 +47,7 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { id, ...updateData } = body;
 
-    // Check if ID exists
+
     const updatedOrder = await Order.findByIdAndUpdate(id, updateData, {
       new: true,
     });

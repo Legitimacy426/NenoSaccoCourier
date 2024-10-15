@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import User, { IUser } from "@/models/User";
-import Order, { IOrder } from "@/models/Order"; // Import Order model
-import Parcel, { IParcel } from "@/models/Parcel"; // Import Parcel model
+
 import { USER_POPULATE_FIELDS } from "@/constants/populate";
 
 // GET: Fetch users or specific user by email/username
@@ -16,7 +15,7 @@ export async function GET(request: Request) {
     if (email) {
       const user = await User.findOne({
         $or: [{ email: email }, { username: email }],
-      })
+      }).populate(USER_POPULATE_FIELDS)
 
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -24,7 +23,7 @@ export async function GET(request: Request) {
       return NextResponse.json(user);
     } else {
       // Otherwise, fetch all users
-      const users = await User.find({ softDeleted: false })
+      const users = await User.find({ softDeleted: false }).populate(USER_POPULATE_FIELDS)
       return NextResponse.json(users);
     }
   } catch (error) {

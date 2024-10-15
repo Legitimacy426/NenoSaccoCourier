@@ -16,6 +16,7 @@ import UITabs from "@/components/custom/UITabs"; // Import UITabs
 import UITable from "@/components/custom/UITable"; // Import UITable
 import { Users, UserPlus, Filter, UserCheck, User } from "lucide-react";
 import Topper from "@/components/custom/Topper";
+import AddUserSheet from "./AddUserSheet";
 
 const userTypes = ["Customers", "Staff", "Admins"];
 
@@ -61,7 +62,7 @@ export default function UsersCompon() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [activeTab, setActiveTab] = useState("Customers");
-
+  const [open, setOpen] = useState(false);
   const filteredUsers = users.filter(
     (user) =>
       user.type === activeTab &&
@@ -110,7 +111,7 @@ export default function UsersCompon() {
             </SelectContent>
           </Select>
           <Button
-            variant="outline"
+
             className="border-purple-500 text-purple-500 hover:bg-purple-50"
           >
             <Filter className="mr-2 h-4 w-4" /> More Filters
@@ -124,7 +125,7 @@ export default function UsersCompon() {
             .map((user) => ({
               ...user,
               actions: (
-                <Button variant="ghost" size="sm">
+                <Button  onClick={() => setOpen(true)}>
                   Edit
                 </Button>
               ),
@@ -147,7 +148,7 @@ export default function UsersCompon() {
         <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
           Users Overview
         </h2>
-        <Button className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white">
+        <Button className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white" onClick={() => setOpen(true)}>
           <UserPlus className="mr-2 h-4 w-4" /> Add New User
         </Button>
       </div>
@@ -186,6 +187,7 @@ export default function UsersCompon() {
 
       {/* Removed the outer card */}
       <UITabs tabs={tabs} defaultValue={activeTab} />
+      <AddUserSheet isOpen={open} onClose={() => {setOpen(false)}} />
     </div>
   );
 }

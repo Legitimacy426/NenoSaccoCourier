@@ -16,6 +16,7 @@ import { IParcel } from "@/models/Parcel";
 import { IOrder } from "@/models/Order";
 import { IParcelType } from "@/models/ParcelType";
 import { useAuth } from "./AuthContext";
+import { IDestination } from "@/models/Destination";
 
 // Type Definitions
 type ToastVariant = "default" | "destructive" | null | undefined;
@@ -42,6 +43,10 @@ interface GlobalContextProps {
   parcelTypes: IParcelType[];
   setParcelTypes: Dispatch<SetStateAction<IParcelType[]>>;
   fetchParcelTypes: () => void;
+  destinations: IDestination[];
+  setDestinations: Dispatch<SetStateAction<IDestination[]>>;
+  fetchDestinations: () => void;
+  
 }
 
 const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
@@ -60,6 +65,7 @@ export const GlobalContextProvider = ({
   const [parcels, setParcels] = useState<IParcel[]>([]);
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [parcelTypes, setParcelTypes] = useState<IParcelType[]>([]);
+  const [destinations, setDestinations] = useState<IDestination[]>([]);
   // Toast function
   const t = useCallback(
     (title: string, message: string, variant: ToastVariant) => {
@@ -73,6 +79,21 @@ export const GlobalContextProvider = ({
   );
 
   // Fetch users function
+    const fetchDestinations = useCallback(async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("/api/destinations", {
+          headers: { "Cache-Control": "no-cache" },
+        });
+        setDestinations(response.data);
+      } catch (error) {
+        console.error("Failed to fetch destinations", error);
+        t("Error", "Failed to fetch destinations. Please try again.", "destructive");
+      } finally {
+        setLoading(false);
+      }
+    }, [t]);
+
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
@@ -112,7 +133,7 @@ export const GlobalContextProvider = ({
       const response = await axios.get("/api/parcelTypes", {
         headers: { "Cache-Control": "no-cache" },
       });
-     
+
       setParcelTypes(response.data);
     } catch (error) {
       console.error("Failed to fetch parcel types", error);
@@ -145,10 +166,11 @@ export const GlobalContextProvider = ({
       await fetchParcels();
       await fetchOrders();
       await fetchParcelTypes();
+      await fetchDestinations();
     };
 
     initializeData();
-  }, [fetchUsers, fetchParcels, fetchOrders, fetchParcelTypes]);
+  }, [fetchUsers, fetchParcels, fetchOrders, fetchParcelTypes, fetchDestinations]);
 
   return (
     <GlobalContext.Provider
@@ -173,6 +195,9 @@ export const GlobalContextProvider = ({
         parcelTypes,
         setParcelTypes,
         fetchParcelTypes,
+        destinations,
+        setDestinations,
+        fetchDestinations,
       }}
     >
       {children}

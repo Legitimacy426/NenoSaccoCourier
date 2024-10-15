@@ -22,9 +22,10 @@ import {
   ArrowDownRight,
   Plus,
 } from "lucide-react";
-import Topper from "@/components/custom/Topper"; // Import the Topper component
-import UITabs from "@/components/custom/UITabs"; // Import the UITabs component
-import UITable from "@/components/custom/UITable"; // Import the UITable component
+import Topper from "@/components/custom/Topper";
+import UITabs from "@/components/custom/UITabs";
+import UITable from "@/components/custom/UITable";
+import AddOrderSheet from "./AddOrderSheet";
 
 const orders = [
   {
@@ -67,6 +68,7 @@ const orders = [
 export default function Orders() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [isOpen, setIsOpen] = useState(false);
 
   const filteredOrders = orders.filter(
     (order) =>
@@ -151,7 +153,7 @@ export default function Orders() {
         <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
           Orders Overview
         </h2>
-        <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
+        <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white" onClick={() => setIsOpen(true)}>
           <Plus className="mr-2 h-4 w-4" /> Add New Order
         </Button>
       </div>
@@ -227,15 +229,19 @@ export default function Orders() {
               </SelectContent>
             </Select>
             <Button
-              variant="outline"
+             
               className="border-blue-500 text-blue-500 hover:bg-blue-50"
             >
               <Filter className="mr-2 h-4 w-4" /> More Filters
             </Button>
-          </div>
+      </div>
 
-          {/* Tabs Section */}
+      {/* Tabs Section */}
       <UITabs tabs={tabs} defaultValue="allOrders" />
+      <AddOrderSheet
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </div>
   );
 }
