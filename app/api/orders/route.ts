@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Order, { IOrder } from "@/models/Order";
 import User from "@/models/User";
+import { ORDER_POPULATE_FIELDS } from "@/constants/populate";
 
 
 export async function GET() {
   await dbConnect();
   try {
-    const orders = await Order.find({})
+    const orders = await Order.find({}).populate(ORDER_POPULATE_FIELDS)
     return NextResponse.json(orders);
   } catch (error) {
     console.error("Error fetching orders:", error);

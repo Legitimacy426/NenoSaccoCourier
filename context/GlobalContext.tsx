@@ -46,7 +46,7 @@ interface GlobalContextProps {
   destinations: IDestination[];
   setDestinations: Dispatch<SetStateAction<IDestination[]>>;
   fetchDestinations: () => void;
-  
+
 }
 
 const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
@@ -170,7 +170,7 @@ export const GlobalContextProvider = ({
     };
 
     initializeData();
-  }, [fetchUsers, fetchParcels, fetchOrders, fetchParcelTypes, fetchDestinations]);
+  }, []);
 
   return (
     <GlobalContext.Provider

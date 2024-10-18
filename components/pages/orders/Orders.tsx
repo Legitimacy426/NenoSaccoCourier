@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   DollarSign,
   Package,
   TrendingUp,
@@ -23,123 +31,46 @@ import {
   Plus,
 } from "lucide-react";
 import Topper from "@/components/custom/Topper";
-import UITabs from "@/components/custom/UITabs";
-import UITable from "@/components/custom/UITable";
 import AddOrderSheet from "./AddOrderSheet";
+import { useGlobal } from "@/context/GlobalContext";
+import { IOrder } from "@/models/Order";
 
-const orders = [
-  {
-    id: "ORD001",
-    customer: "John Doe",
-    date: "2023-05-15",
-    status: "Completed",
-    total: 120.5,
-  },
-  {
-    id: "ORD002",
-    customer: "Jane Smith",
-    date: "2023-05-16",
-    status: "Processing",
-    total: 85.0,
-  },
-  {
-    id: "ORD003",
-    customer: "Bob Johnson",
-    date: "2023-05-17",
-    status: "Shipped",
-    total: 200.75,
-  },
-  {
-    id: "ORD004",
-    customer: "Alice Brown",
-    date: "2023-05-18",
-    status: "Pending",
-    total: 150.25,
-  },
-  {
-    id: "ORD005",
-    customer: "Charlie Davis",
-    date: "2023-05-19",
-    status: "Completed",
-    total: 95.5,
-  },
-];
+enum OrderStatus {
+  Processing = "processing",
+  Shipped = "shipped",
+  Delivered = "delivered",
+  Cancelled = "cancelled",
+}
+
+
 
 export default function Orders() {
+  const { orders } = useGlobal();
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | "All">("All");
+  const [filteredOrders, setFilteredOrders] = useState<IOrder[]>(orders);
   const [isOpen, setIsOpen] = useState(false);
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      (order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customer.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (statusFilter === "All" || order.status === statusFilter)
-  );
+  useEffect(() => {
+    const filtered = orders.filter(
+      (order) =>
+        (order.trackingNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.customer?.username.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (statusFilter === "All" || order.status === statusFilter)
+    );
+    setFilteredOrders(filtered);
+  }, [searchTerm, statusFilter, orders]);
 
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const totalRevenue = orders
+    .filter((order) => order.status === OrderStatus.Delivered)
+    .reduce((sum, order) => sum + order.totalAmount, 0);
+
   const completedOrders = orders.filter(
-    (order) => order.status === "Completed"
+    (order) => order.status === OrderStatus.Delivered
   ).length;
   const pendingOrders = orders.filter(
-    (order) => order.status === "Pending"
+    (order) => order.status === OrderStatus.Processing
   ).length;
-
-  const columns = [
-    { header: "Order ID", accessor: "id" },
-    { header: "Customer", accessor: "customer" },
-    { header: "Date", accessor: "date" },
-    { header: "Status", accessor: "status", badge: true },
-    { header: "Total", accessor: "total" },
-  ];
-
-  const tabs = [
-    {
-      value: "allOrders",
-      label: "All",
-      content: <UITable columns={columns} data={filteredOrders} />,
-    },
-    {
-      value: "completedOrders",
-      label: "Completed ",
-      content: (
-        <UITable
-          columns={columns}
-          data={filteredOrders.filter((order) => order.status === "Completed")}
-        />
-      ),
-    },
-    {
-      value: "processingOrders",
-      label: "Processing",
-      content: (
-        <UITable
-          columns={columns}
-          data={filteredOrders.filter((order) => order.status === "Processing")}
-        />
-      ),
-    },
-    {
-      value: "shippedOrders",
-      label: "Shipped ",
-      content: (
-        <UITable
-          columns={columns}
-          data={filteredOrders.filter((order) => order.status === "Shipped")}
-        />
-      ),
-    },
-    {
-      value: "pendingOrders",
-      label: "Pending ",
-      content: (
-        <UITable
-          columns={columns}
-          data={filteredOrders.filter((order) => order.status === "Pending")}
-        />
-      ),
-    },
-  ];
 
   return (
     <div className="p-8 space-y-8">
@@ -147,13 +78,16 @@ export default function Orders() {
         title="Order Management"
         description="Welcome to the Order Management dashboard. Here you can track, manage, and analyze all customer orders efficiently. Use the tools below to search for specific orders, filter by status, and get an overview of your business performance."
         icon={ShoppingBag}
-        image="/images/cargo1.jpg" // Adjust the image path as necessary
+        image="/images/cargo1.jpg"
       />
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
           Orders Overview
         </h2>
-        <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white" onClick={() => setIsOpen(true)}>
+        <Button
+          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+          onClick={() => setIsOpen(true)}
+        >
           <Plus className="mr-2 h-4 w-4" /> Add New Order
         </Button>
       </div>
@@ -165,7 +99,9 @@ export default function Orders() {
             <DollarSign className="h-5 w-5" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">${totalRevenue.toFixed(2)}</div>
+            <div className="text-xl font-bold">
+              KES{totalRevenue.toFixed(2)}
+            </div>
             <p className="text-sm opacity-80 flex items-center">
               <ArrowUpRight className="h-4 w-4 mr-1" />
               10.5% from last month
@@ -205,43 +141,83 @@ export default function Orders() {
       </div>
 
       {/* Search and Filter Section */}
-
-          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
-            <div className="flex-1">
-              <Input
-                type="text"
-                placeholder="Search orders..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full"
-              />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All Statuses</SelectItem>
-                <SelectItem value="Completed">Completed</SelectItem>
-                <SelectItem value="Processing">Processing</SelectItem>
-                <SelectItem value="Shipped">Shipped</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-             
-              className="border-blue-500 text-blue-500 hover:bg-blue-50"
-            >
-              <Filter className="mr-2 h-4 w-4" /> More Filters
-            </Button>
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
+        <div className="flex-1">
+          <Input
+            type="text"
+            placeholder="Search orders..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full"
+          />
+        </div>
+        <Select
+          value={statusFilter}
+          onValueChange={(value) =>
+            setStatusFilter(value as OrderStatus | "All")
+          }
+        >
+          <SelectTrigger className="w-full md:w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Statuses</SelectItem>
+            {Object.values(OrderStatus).map((status) => (
+              <SelectItem key={status} value={status}>
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Tabs Section */}
-      <UITabs tabs={tabs} defaultValue="allOrders" />
-      <AddOrderSheet
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      />
+      {/* Orders Table */}
+      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
+        <Table className="bg-white dark:bg-gray-900">
+          <TableHeader className="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 border-b border-gray-100 dark:border-none">
+            <TableRow>
+              <TableHead>Order ID</TableHead>
+              <TableHead>Customer</TableHead>
+              <TableHead>Created Date</TableHead>
+              <TableHead>Delivery Date</TableHead>
+
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Total Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredOrders.map((order) => (
+              <TableRow key={order._id as string}>
+                <TableCell>{order.trackingNumber}</TableCell>
+                <TableCell>{order.customer?.username}</TableCell>
+                <TableCell>
+                  {new Date(order.createdAt).toDateString()}
+                </TableCell>
+                <TableCell>
+                  {new Date(order.estimatedDeliveryDate).toDateString()}
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={
+                      order.status === OrderStatus.Delivered
+                        ? "secondary"
+                        : order.status === OrderStatus.Shipped
+                        ? "destructive"
+                        : "default"
+                    }
+                  >
+                    {order.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  KES {order.totalAmount.toFixed(2)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <AddOrderSheet isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>
   );
 }

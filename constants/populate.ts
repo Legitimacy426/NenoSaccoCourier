@@ -3,21 +3,16 @@ export const ORDER_POPULATE_FIELDS = [
   { path: "customer", select: "username email" }, // Populate user info in orders
   {
     path: "parcels",
-    populate: [
-      { path: "parcelType", select: "name description" },
-      { path: "senderId", select: "username email" },
-      { path: "recipientId", select: "username email" },
-    ],
+
   }, // Populate parcel info with parcelType and delivery details
 
 ];
 
 // Fields for populating parcel-related references
 export const PARCEL_POPULATE_FIELDS = [
-
-
+  { path: "senderId", select: "username email" },
+  { path: "recipientId", select: "username email" },
   { path: "parcelType", select: "name description" }, // Populate parcelType info
-
 ];
 
 // Fields for populating user-related references

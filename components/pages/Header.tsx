@@ -38,7 +38,7 @@ export default function Header({
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center">
           <Button
-            variant="ghost"
+
             size="icon"
             onClick={toggleSidebar}
             className="lg:hidden mr-2"
@@ -50,7 +50,7 @@ export default function Header({
         </div>
         <div className="flex items-center space-x-4">
           <Button
-            variant="ghost"
+
             size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >

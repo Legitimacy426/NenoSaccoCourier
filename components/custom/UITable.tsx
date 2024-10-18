@@ -17,7 +17,7 @@ interface Column {
 
 interface UITableProps {
   columns: Column[]; // Array of column definitions
-  data: any[]; // Array of data rows
+  data: any[]; // Array of data 
 }
 
 const UITable = ({ columns, data }: UITableProps) => {

@@ -45,7 +45,7 @@ export default function Main() {
             {activeTab === "Orders" && <Orders />}
             {activeTab === "Profile" && <Profile />}
             {activeTab === "Track" && <Track />}
-            {activeTab === "Parcel Types" && <ParcelTypes />}
+          
           </div>
         </main>
       </div>

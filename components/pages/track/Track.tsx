@@ -187,7 +187,7 @@ export default function OrderTracking() {
                     <Truck className="h-6 w-6 text-blue-500" />
                     <div>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Carrier
+                        Carrier info
                       </p>
                       <p className="font-medium">{selectedOrder.carrier}</p>
                     </div>
@@ -210,7 +210,7 @@ export default function OrderTracking() {
                         Total Amount
                       </p>
                       <p className="font-medium">
-                        ${selectedOrder.totalAmount.toFixed(2)}
+                        KES {selectedOrder.totalAmount.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -221,7 +221,7 @@ export default function OrderTracking() {
                         Shipping Price
                       </p>
                       <p className="font-medium">
-                        ${selectedOrder.shippingPrice.toFixed(2)}
+                        KES {selectedOrder.shippingPrice.toFixed(2)}
                       </p>
                     </div>
                   </div>

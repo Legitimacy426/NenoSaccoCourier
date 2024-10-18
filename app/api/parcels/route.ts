@@ -9,7 +9,7 @@ export async function GET() {
   await dbConnect();
   try {
     // Fetch only parcels that are not soft deleted
-    const parcels = await Parcel.find({ softDeleted: false })
+    const parcels = await Parcel.find({ softDeleted: false }).populate(PARCEL_POPULATE_FIELDS)
     return NextResponse.json(parcels);
   } catch (error) {
     console.error("Error fetching parcels:", error);

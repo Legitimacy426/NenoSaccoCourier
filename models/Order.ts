@@ -16,7 +16,7 @@ export interface IOrder extends Document {
   carrier: string;
   estimatedDeliveryDate: Date;
 
-  customer: IUser["_id"];
+  customer: IUser;
   parcels: IParcel["_id"][];
   status: OrderStatus;
   orderDate: Date;

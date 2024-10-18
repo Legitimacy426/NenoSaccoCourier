@@ -119,7 +119,7 @@ const AddParcelSheet: FC<AddParcelSheetProps> = ({ isOpen, onClose }) => {
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="m-4 max-h-[90vh] rounded-md flex flex-col overflow-y-auto border-2 border-gray-300 dark:border-gray-800 shadow-md">
+      <SheetContent className="sm:max-w-[30vw] m-4 max-h-[96vh] rounded-md flex flex-col overflow-y-auto border-2 border-gray-300 dark:border-gray-800 shadow-md">
         <SheetHeader>
           <SheetTitle>Add New Parcel</SheetTitle>
           <p className="text-sm text-gray-500">
@@ -128,8 +128,6 @@ const AddParcelSheet: FC<AddParcelSheetProps> = ({ isOpen, onClose }) => {
         </SheetHeader>
 
         <form className="flex flex-col" onSubmit={handleSubmit}>
-
-
           {/* Parcel Name */}
           <div className="space-y-2 mb-4">
             <Label htmlFor="parcelName">Parcel Name</Label>
@@ -327,9 +325,7 @@ const AddParcelSheet: FC<AddParcelSheetProps> = ({ isOpen, onClose }) => {
                 </SelectGroup>
                 <SelectGroup>
                   <SelectLabel>Create New Parcel Type</SelectLabel>
-                  <SelectItem value="new">
-                    Create a new parcel type
-                  </SelectItem>
+                  <SelectItem value="new">Create a new parcel type</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -338,9 +334,7 @@ const AddParcelSheet: FC<AddParcelSheetProps> = ({ isOpen, onClose }) => {
           {isCreatingParcelType && (
             <div className="space-y-4 mb-4">
               <div className="space-y-2">
-                <Label htmlFor="newParcelTypeName">
-                  New Parcel Type Name
-                </Label>
+                <Label htmlFor="newParcelTypeName">New Parcel Type Name</Label>
                 <Input
                   id="newParcelTypeName"
                   placeholder="Enter new parcel type name"
@@ -355,9 +349,7 @@ const AddParcelSheet: FC<AddParcelSheetProps> = ({ isOpen, onClose }) => {
                   id="newParcelTypeDescription"
                   placeholder="Enter parcel type description"
                   value={newParcelTypeDescription}
-                  onChange={(e) =>
-                    setNewParcelTypeDescription(e.target.value)
-                  }
+                  onChange={(e) => setNewParcelTypeDescription(e.target.value)}
                   className="min-h-[100px] flex-grow"
                 />
               </div>
@@ -387,7 +379,7 @@ const AddParcelSheet: FC<AddParcelSheetProps> = ({ isOpen, onClose }) => {
 
           {/* Price Input */}
           <div className="space-y-2 mb-4">
-            <Label htmlFor="price">Price ($)</Label>
+            <Label htmlFor="price">Price (KES)</Label>
             <Input
               id="price"
               type="number"

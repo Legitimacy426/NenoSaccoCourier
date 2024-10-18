@@ -21,34 +21,65 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useAuth } from "@/context/AuthContext";
+import { useGlobal } from "@/context/GlobalContext";
+import { IOrder } from "@/models/Order";
 
 const data = [
-  { name: "Jan", value: 400 },
-  { name: "Feb", value: 300 },
-  { name: "Mar", value: 500 },
-  { name: "Apr", value: 280 },
-  { name: "May", value: 590 },
-  { name: "Jun", value: 320 },
+  { name: "Jan", value: 10000 },
+  { name: "Feb", value: 30000 },
+  { name: "Mar", value: 20000 },
+  { name: "Apr", value: 18000 },
+  { name: "May", value: 29000 },
+  { name: "Jun", value: 32000 },
+  { name: "Jul", value: 50000},
+  { name: "Aug", value: 38000 },
+  { name: "sep", value: 59000 },
+  { name: "Oct", value: 22000 },
+  { name: "Nov", value: 59000 },
+  { name: "Dec", value: 72000 },
 ];
 
-const recentOrders = [
-  { id: "1", customer: "John Doe", amount: "$120", status: "Completed" },
-  { id: "2", customer: "Jane Smith", amount: "$85", status: "Pending" },
-  { id: "3", customer: "Bob Johnson", amount: "$200", status: "Processing" },
-];
 
 export default function Dashboard() {
-  const { user } = useAuth();
+
+  const {parcels,users,orders} = useGlobal()
+    const { user } = useAuth();
+    function getTotalRevenue(orders: IOrder[]): number {
+
+      const deliveredOrders = orders.filter(
+        (order) => order.status === "delivered"
+      );
+
+      const totalRevenue = deliveredOrders.reduce((sum, order) => {
+        return sum + order.totalAmount;
+      }, 0);
+
+      return totalRevenue;
+    }
+const totalRevenue = getTotalRevenue(orders);
+
+
+
+
+const recentOrders = orders
+  .sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  )
+  .slice(0, 5);
+
+
   return (
     <div className="p-8 space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Welcome back, {user?.username}!</h1>
+          <h1 className="text-3xl font-bold">
+            Welcome back, {user?.username}!
+          </h1>
           <p className="text-muted-foreground">
             Here's what's happening with your courier service today.
           </p>
         </div>
-        <Button>View Reports</Button>
+
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -58,7 +89,7 @@ export default function Dashboard() {
             <Package className="h-5 w-5" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">1,234</div>
+            <div className="text-3xl font-bold">{parcels?.length}</div>
             <p className="text-sm opacity-80 flex items-center">
               <ArrowUpRight className="h-4 w-4 mr-1" />
               20.1% from last month
@@ -72,7 +103,7 @@ export default function Dashboard() {
             <Users className="h-5 w-5" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">573</div>
+            <div className="text-3xl font-bold">{users?.length}</div>
             <p className="text-sm opacity-80 flex items-center">
               <ArrowUpRight className="h-4 w-4 mr-1" />
               12.5% from last month
@@ -88,7 +119,7 @@ export default function Dashboard() {
             <ShoppingCart className="h-5 w-5" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">89</div>
+            <div className="text-3xl font-bold">{orders?.length}</div>
             <p className="text-sm opacity-80 flex items-center">
               <ArrowDownRight className="h-4 w-4 mr-1" />
               5.2% from last month
@@ -102,7 +133,7 @@ export default function Dashboard() {
             <BarChart className="h-5 w-5" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">$12,345</div>
+            <div className="text-xl font-bold">KES {totalRevenue}000000</div>
             <p className="text-sm opacity-80 flex items-center">
               <ArrowUpRight className="h-4 w-4 mr-1" />
               15.3% from last month
@@ -140,27 +171,33 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentOrders.map((order) => (
+              {recentOrders.map((order: any) => (
                 <div
-                  key={order.id}
+                  key={order._id as string}
                   className="flex items-center justify-between"
                 >
                   <div className="flex items-center space-x-4">
                     <Avatar>
-                      <AvatarFallback>{order.customer[0]}</AvatarFallback>
+                      <AvatarFallback>
+                        {order.customer?.username
+                          ? order.customer.username.charAt(0).toUpperCase()
+                          : "?"}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-medium">{order.customer}</p>
+                      <p className="text-sm font-medium">
+                        {order?.customer?.username}
+                      </p>
                       <p className="text-sm text-muted-foreground">
-                        {order.amount}
+                        KES {order.totalAmount}
                       </p>
                     </div>
                   </div>
                   <div
                     className={`px-2 py-1 rounded-full text-xs ${
-                      order.status === "Completed"
+                      order?.status === "delivered"
                         ? "bg-green-100 text-green-800"
-                        : order.status === "Pending"
+                        : order?.status === "shipped"
                         ? "bg-yellow-100 text-yellow-800"
                         : "bg-blue-100 text-blue-800"
                     }`}
