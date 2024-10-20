@@ -158,7 +158,7 @@ export default function UsersCompon() {
                 <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Phone</TableHead>
-                <TableHead>Actions</TableHead>
+
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -180,15 +180,7 @@ export default function UsersCompon() {
                     </Badge>
                   </TableCell>
                   <TableCell>{user?.phone || "N/A"}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setOpen(true)}
-                    >
-                      Edit
-                    </Button>
-                  </TableCell>
+
                 </TableRow>
               ))}
             </TableBody>
