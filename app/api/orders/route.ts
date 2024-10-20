@@ -43,19 +43,24 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  await dbConnect();
+  await dbConnect(); // Ensure database connection
   try {
     const body = await request.json();
-    const { id, ...updateData } = body;
+    const { _id, status } = body;
 
+    // Corrected to pass the update fields inside an object
+    const updatedOrder = await Order.findByIdAndUpdate(
+      _id,
+      { status }, // Wrap the status in an object
+      { new: true }
+    );
 
-    const updatedOrder = await Order.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
+    console.log(updatedOrder);
 
     if (!updatedOrder) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
+
     return NextResponse.json(updatedOrder);
   } catch (error) {
     console.error("Error updating order:", error);
@@ -65,6 +70,7 @@ export async function PUT(request: Request) {
     );
   }
 }
+
 
 export async function DELETE(request: Request) {
   await dbConnect();

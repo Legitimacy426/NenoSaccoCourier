@@ -119,7 +119,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       setUserId(null);
       setRole(null);
       setLoading(false);
-      router.push("/auth");
+      router.push("/");
     };
 
     loadUser();
@@ -133,7 +133,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
     localStorage.removeItem("authUserNeno");
     router.push("/auth");
-    t("Logged out", "You have been logged out successfully", "default");
+    t("Logge out", "You have been logged out successfully", "default");
   };
 
   return (

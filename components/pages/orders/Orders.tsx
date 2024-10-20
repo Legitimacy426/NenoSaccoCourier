@@ -24,14 +24,15 @@ import {
   DollarSign,
   Package,
   TrendingUp,
-  Filter,
   ShoppingBag,
   ArrowUpRight,
   ArrowDownRight,
   Plus,
+  Edit2,
 } from "lucide-react";
 import Topper from "@/components/custom/Topper";
 import AddOrderSheet from "./AddOrderSheet";
+import EditOrderSheet from "./EditOrderSheet"; // Import EditOrderSheet
 import { useGlobal } from "@/context/GlobalContext";
 import { IOrder } from "@/models/Order";
 
@@ -42,20 +43,24 @@ enum OrderStatus {
   Cancelled = "cancelled",
 }
 
-
-
 export default function Orders() {
   const { orders } = useGlobal();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "All">("All");
   const [filteredOrders, setFilteredOrders] = useState<IOrder[]>(orders);
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false); // State for EditOrderSheet
+  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null); // Selected order for editing
 
   useEffect(() => {
     const filtered = orders.filter(
       (order) =>
-        (order.trackingNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.customer?.username.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (order.trackingNumber
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+          order.customer?.username
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())) &&
         (statusFilter === "All" || order.status === statusFilter)
     );
     setFilteredOrders(filtered);
@@ -71,6 +76,12 @@ export default function Orders() {
   const pendingOrders = orders.filter(
     (order) => order.status === OrderStatus.Processing
   ).length;
+
+  // Open EditOrderSheet and set the selected order
+  const handleEdit = (order: IOrder) => {
+    setSelectedOrder(order);
+    setIsEditOpen(true);
+  };
 
   return (
     <div className="p-8 space-y-8">
@@ -180,9 +191,10 @@ export default function Orders() {
               <TableHead>Customer</TableHead>
               <TableHead>Created Date</TableHead>
               <TableHead>Delivery Date</TableHead>
-
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Total Amount</TableHead>
+              <TableHead className="text-right">Actions</TableHead>{" "}
+              {/* New Actions column */}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -212,12 +224,30 @@ export default function Orders() {
                 <TableCell className="text-right">
                   KES {order.totalAmount.toFixed(2)}
                 </TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleEdit(order)}
+                    className="text-sm"
+                  >
+                    <Edit2 className="mr-2 h-4 w-4" /> Edit
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
       <AddOrderSheet isOpen={isOpen} onClose={() => setIsOpen(false)} />
+
+      {selectedOrder && (
+        <EditOrderSheet
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          order={selectedOrder} // Pass the selected order for editing
+        />
+      )}
     </div>
   );
 }

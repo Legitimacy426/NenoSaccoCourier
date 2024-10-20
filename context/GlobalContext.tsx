@@ -149,9 +149,10 @@ export const GlobalContextProvider = ({
     setLoading(true);
     try {
       const response = await axios.get("/api/orders", {
-        headers: { "Cache-Control": "no-cache" },
+
       });
       setOrders(response.data);
+    
     } catch (error) {
       console.error("Failed to fetch orders", error);
       t("Error", "Failed to fetch orders. Please try again.", "destructive");
